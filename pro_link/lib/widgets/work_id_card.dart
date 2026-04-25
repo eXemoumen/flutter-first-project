@@ -1,6 +1,8 @@
-﻿import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+
+import '../config/theme.dart';
 
 class WorkIdCard extends StatelessWidget {
   const WorkIdCard({
@@ -27,15 +29,15 @@ class WorkIdCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
         gradient: const LinearGradient(
-          colors: [Color(0xFF0B1F3A), Color(0xFF006D77)],
+          colors: [AppTheme.primaryDark, AppTheme.accentViolet],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+            color: AppTheme.accentViolet.withOpacity(0.3),
+            blurRadius: 24,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
