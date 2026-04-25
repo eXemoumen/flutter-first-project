@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -39,7 +39,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
       final role = ref.read(authProvider).role;
       if (role == null) return;
-      context.go('/${appRoleToString(role)}');
+      context.go('/${role.name}');
     } catch (e) {
       if (!mounted) return;
       AppFeedback.error(context, 'Login failed: $e');

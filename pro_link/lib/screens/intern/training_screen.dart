@@ -41,7 +41,7 @@ class TrainingScreen extends ConsumerWidget {
                   fileType: item.fileType ?? 'file',
                   onOpen: () => openModule(item.fileUrl),
                 ),
-              ),
+              );
             },
           ),
         ),

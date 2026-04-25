@@ -1,4 +1,4 @@
-﻿import '../utils/json_utils.dart';
+import '../utils/json_utils.dart';
 import 'user_model.dart';
 
 class MentorModel extends UserModel {
@@ -45,20 +45,29 @@ class MentorModel extends UserModel {
     );
   }
 
+  @override
   MentorModel copyWith({
+    String? id,
+    String? email,
+    String? fullName,
+    AppRole? role,
+    String? photoUrl,
+    String? phone,
+    bool? isApproved,
+    DateTime? createdAt,
     String? profileId,
     String? departmentId,
     String? department,
     String? specialization,
   }) {
     return MentorModel(
-      id: id,
-      email: email,
-      fullName: fullName,
-      photoUrl: photoUrl,
-      phone: phone,
-      isApproved: isApproved,
-      createdAt: createdAt,
+      id: id ?? this.id,
+      email: email ?? this.email,
+      fullName: fullName ?? this.fullName,
+      photoUrl: photoUrl ?? this.photoUrl,
+      phone: phone ?? this.phone,
+      isApproved: isApproved ?? this.isApproved,
+      createdAt: createdAt ?? this.createdAt,
       profileId: profileId ?? this.profileId,
       departmentId: departmentId ?? this.departmentId,
       department: department ?? this.department,

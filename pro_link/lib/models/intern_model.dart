@@ -1,4 +1,4 @@
-﻿import '../utils/json_utils.dart';
+import '../utils/json_utils.dart';
 import 'user_model.dart';
 
 class InternModel extends UserModel {
@@ -69,7 +69,16 @@ class InternModel extends UserModel {
     );
   }
 
+  @override
   InternModel copyWith({
+    String? id,
+    String? email,
+    String? fullName,
+    AppRole? role,
+    String? photoUrl,
+    String? phone,
+    bool? isApproved,
+    DateTime? createdAt,
     String? matricule,
     String? profileId,
     String? departmentId,
@@ -80,16 +89,15 @@ class InternModel extends UserModel {
     String? faculty,
     DateTime? startDate,
     DateTime? endDate,
-    bool? isApproved,
   }) {
     return InternModel(
-      id: id,
-      email: email,
-      fullName: fullName,
-      photoUrl: photoUrl,
-      phone: phone,
+      id: id ?? this.id,
+      email: email ?? this.email,
+      fullName: fullName ?? this.fullName,
+      photoUrl: photoUrl ?? this.photoUrl,
+      phone: phone ?? this.phone,
       isApproved: isApproved ?? this.isApproved,
-      createdAt: createdAt,
+      createdAt: createdAt ?? this.createdAt,
       matricule: matricule ?? this.matricule,
       profileId: profileId ?? this.profileId,
       departmentId: departmentId ?? this.departmentId,
