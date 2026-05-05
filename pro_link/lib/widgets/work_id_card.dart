@@ -29,76 +29,81 @@ class WorkIdCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
         gradient: const LinearGradient(
-          colors: [AppTheme.primaryDark, AppTheme.accentViolet],
+          colors: [AppTheme.primaryDarkColor, AppTheme.primaryLight],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.accentViolet.withOpacity(0.3),
+            color: AppTheme.primaryLight.withOpacity(0.3),
             blurRadius: 24,
             offset: const Offset(0, 10),
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 28,
-                backgroundImage: photoUrl != null && photoUrl!.isNotEmpty
-                    ? CachedNetworkImageProvider(photoUrl!)
-                    : null,
-                child: photoUrl == null || photoUrl!.isEmpty
-                    ? const Icon(Icons.person, size: 30)
-                    : null,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Pro-Link Corporate ID',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: Colors.white70,
+      child: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 28,
+                  backgroundImage: photoUrl != null && photoUrl!.isNotEmpty
+                      ? CachedNetworkImageProvider(photoUrl!)
+                      : null,
+                  child: photoUrl == null || photoUrl!.isEmpty
+                      ? const Icon(Icons.person, size: 30)
+                      : null,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Pro-Link Corporate ID',
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: Colors.white70,
+                        ),
                       ),
-                    ),
-                    Text(
-                      fullName,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
+                      Text(
+                        fullName,
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            _infoRow('Matricule', matricule),
+            _infoRow('Department', department),
+            _infoRow('Email', email),
+            const SizedBox(height: 16),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: QrImageView(
+                  data: '$fullName|$matricule|$department|$email',
+                  size: 84,
+                  backgroundColor: Colors.white,
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          _infoRow('Matricule', matricule),
-          _infoRow('Department', department),
-          _infoRow('Email', email),
-          const SizedBox(height: 16),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: QrImageView(
-                data: '$fullName|$matricule|$department|$email',
-                size: 84,
-                backgroundColor: Colors.white,
-              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

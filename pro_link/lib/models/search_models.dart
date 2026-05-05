@@ -1,4 +1,4 @@
-﻿enum SearchCategory { interns, modules, policies }
+enum SearchCategory { interns, modules, policies }
 
 class SearchItem {
   const SearchItem({
@@ -6,12 +6,14 @@ class SearchItem {
     required this.title,
     required this.subtitle,
     required this.category,
+    this.fileUrl,
   });
 
   final String id;
   final String title;
   final String subtitle;
   final SearchCategory category;
+  final String? fileUrl;
 }
 
 class SearchResultBundle {

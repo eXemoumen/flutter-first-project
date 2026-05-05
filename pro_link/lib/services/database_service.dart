@@ -1,4 +1,4 @@
-﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
@@ -112,8 +112,16 @@ class DatabaseService {
   ];
 
   static final List<Map<String, String?>> _mockMentorProfiles = [
-    {'user_id': 'mentor-1', 'department_id': 'dep-2', 'specialization': 'Support'},
-    {'user_id': 'mentor-2', 'department_id': 'dep-1', 'specialization': 'Mobile'},
+    {
+      'user_id': 'mentor-1',
+      'department_id': 'dep-2',
+      'specialization': 'Support'
+    },
+    {
+      'user_id': 'mentor-2',
+      'department_id': 'dep-1',
+      'specialization': 'Mobile'
+    },
   ];
 
   static final List<ScheduleModel> _mockSchedules = [
@@ -235,7 +243,8 @@ class DatabaseService {
     String? faculty,
   }) async {
     if (!_enabled) {
-      final index = _mockInternProfiles.indexWhere((e) => e['user_id'] == userId);
+      final index =
+          _mockInternProfiles.indexWhere((e) => e['user_id'] == userId);
       final profile = {
         'user_id': userId,
         'matricule': matricule,
@@ -266,7 +275,8 @@ class DatabaseService {
     String? specialization,
   }) async {
     if (!_enabled) {
-      final index = _mockMentorProfiles.indexWhere((e) => e['user_id'] == userId);
+      final index =
+          _mockMentorProfiles.indexWhere((e) => e['user_id'] == userId);
       final profile = {
         'user_id': userId,
         'department_id': departmentId,
@@ -300,27 +310,25 @@ class DatabaseService {
 
   Future<List<MentorModel>> fetchMentors() async {
     if (!_enabled) {
-      return _mockUsers
-          .where((u) => u.role == AppRole.mentor)
-          .map((user) {
-            final profile = _mockMentorProfiles.firstWhere((p) => p['user_id'] == user.id);
-            final department = _mockDepartments
-                .where((d) => d.id == profile['department_id'])
-                .firstOrNull
-                ?.name;
-            return MentorModel(
-              id: user.id,
-              email: user.email,
-              fullName: user.fullName,
-              photoUrl: user.photoUrl,
-              phone: user.phone,
-              isApproved: user.isApproved,
-              departmentId: profile['department_id'],
-              department: department,
-              specialization: profile['specialization'],
-            );
-          })
-          .toList();
+      return _mockUsers.where((u) => u.role == AppRole.mentor).map((user) {
+        final profile =
+            _mockMentorProfiles.firstWhere((p) => p['user_id'] == user.id);
+        final department = _mockDepartments
+            .where((d) => d.id == profile['department_id'])
+            .firstOrNull
+            ?.name;
+        return MentorModel(
+          id: user.id,
+          email: user.email,
+          fullName: user.fullName,
+          photoUrl: user.photoUrl,
+          phone: user.phone,
+          isApproved: user.isApproved,
+          departmentId: profile['department_id'],
+          department: department,
+          specialization: profile['specialization'],
+        );
+      }).toList();
     }
 
     final response = await _client!
@@ -336,39 +344,37 @@ class DatabaseService {
 
   Future<List<InternModel>> fetchInterns() async {
     if (!_enabled) {
-      return _mockUsers
-          .where((u) => u.role == AppRole.intern)
-          .map((user) {
-            final profile = _mockInternProfiles.firstWhere((p) => p['user_id'] == user.id);
-            final department = _mockDepartments
-                .where((d) => d.id == profile['department_id'])
-                .firstOrNull
-                ?.name;
-            final mentor = _mockUsers
-                .where((u) => u.id == profile['mentor_id'])
-                .firstOrNull
-                ?.fullName;
-            return InternModel(
-              id: user.id,
-              email: user.email,
-              fullName: user.fullName,
-              photoUrl: user.photoUrl,
-              phone: user.phone,
-              isApproved: user.isApproved,
-              matricule: profile['matricule'] ?? 'N/A',
-              departmentId: profile['department_id'],
-              department: department,
-              mentorId: profile['mentor_id'],
-              mentorName: mentor,
-            );
-          })
-          .toList();
+      return _mockUsers.where((u) => u.role == AppRole.intern).map((user) {
+        final profile =
+            _mockInternProfiles.firstWhere((p) => p['user_id'] == user.id);
+        final department = _mockDepartments
+            .where((d) => d.id == profile['department_id'])
+            .firstOrNull
+            ?.name;
+        final mentor = _mockUsers
+            .where((u) => u.id == profile['mentor_id'])
+            .firstOrNull
+            ?.fullName;
+        return InternModel(
+          id: user.id,
+          email: user.email,
+          fullName: user.fullName,
+          photoUrl: user.photoUrl,
+          phone: user.phone,
+          isApproved: user.isApproved,
+          matricule: profile['matricule'] ?? 'N/A',
+          departmentId: profile['department_id'],
+          department: department,
+          mentorId: profile['mentor_id'],
+          mentorName: mentor,
+        );
+      }).toList();
     }
 
     final response = await _client!
         .from(AppConstants.usersTable)
         .select(
-          'id,email,full_name,photo_url,phone,is_approved,created_at,intern_profiles(id,matricule,department_id,mentor_id,university,faculty,start_date,end_date,departments(name),mentor:users!intern_profiles_mentor_id_fkey(full_name,id))',
+          'id,email,full_name,photo_url,phone,is_approved,created_at,intern_profiles!intern_profiles_user_id_fkey(id,matricule,department_id,mentor_id,university,faculty,start_date,end_date,departments(name),mentor:users!intern_profiles_mentor_id_fkey(full_name,id))',
         )
         .eq('role', 'intern')
         .order('full_name');
@@ -420,7 +426,8 @@ class DatabaseService {
     String? mentorId,
   }) async {
     if (!_enabled) {
-      final index = _mockInternProfiles.indexWhere((e) => e['user_id'] == internId);
+      final index =
+          _mockInternProfiles.indexWhere((e) => e['user_id'] == internId);
       if (index >= 0) {
         _mockInternProfiles[index]['department_id'] = departmentId;
         _mockInternProfiles[index]['mentor_id'] = mentorId;
@@ -428,14 +435,14 @@ class DatabaseService {
       return;
     }
 
-    await _client!.from(AppConstants.internProfilesTable).upsert({
-      'user_id': internId,
+    await _client!.from(AppConstants.internProfilesTable).update({
       'department_id': departmentId,
       'mentor_id': mentorId,
-    }, onConflict: 'user_id');
+    }).eq('user_id', internId);
   }
 
-  Future<List<ScheduleModel>> fetchSchedulesForDepartment(String? departmentId) async {
+  Future<List<ScheduleModel>> fetchSchedulesForDepartment(
+      String? departmentId) async {
     if (!_enabled) {
       return _mockSchedules
           .where((e) => departmentId == null || e.departmentId == departmentId)
@@ -443,16 +450,15 @@ class DatabaseService {
         ..sort((a, b) => b.validFrom.compareTo(a.validFrom));
     }
 
-    dynamic query = _client!
+    var query = _client!
         .from(AppConstants.schedulesTable)
-        .select('*,departments(name)')
-        .order('created_at', ascending: false);
+        .select('*,departments(name)');
 
     if (departmentId != null && departmentId.isNotEmpty) {
       query = query.eq('department_id', departmentId);
     }
 
-    final response = await query;
+    final response = await query.order('created_at', ascending: false);
     return response.map<ScheduleModel>(ScheduleModel.fromMap).toList();
   }
 
@@ -477,7 +483,9 @@ class DatabaseService {
         .select()
         .order('created_at', ascending: false);
 
-    return response.map<PolicyDocumentModel>(PolicyDocumentModel.fromMap).toList();
+    return response
+        .map<PolicyDocumentModel>(PolicyDocumentModel.fromMap)
+        .toList();
   }
 
   Future<void> createPolicyDocument(PolicyDocumentModel policy) async {
@@ -486,7 +494,9 @@ class DatabaseService {
       return;
     }
 
-    await _client!.from(AppConstants.policyDocumentsTable).insert(policy.toMap());
+    await _client!
+        .from(AppConstants.policyDocumentsTable)
+        .insert(policy.toMap());
   }
 
   Future<List<TrainingModuleModel>> fetchTrainingModulesForDepartment(
@@ -498,17 +508,18 @@ class DatabaseService {
           .toList();
     }
 
-    dynamic query = _client!
+    var query = _client!
         .from(AppConstants.trainingModulesTable)
-        .select('*,departments(name)')
-        .order('created_at', ascending: false);
+        .select('*,departments(name)');
 
     if (departmentId != null && departmentId.isNotEmpty) {
       query = query.eq('department_id', departmentId);
     }
 
-    final response = await query;
-    return response.map<TrainingModuleModel>(TrainingModuleModel.fromMap).toList();
+    final response = await query.order('created_at', ascending: false);
+    return response
+        .map<TrainingModuleModel>(TrainingModuleModel.fromMap)
+        .toList();
   }
 
   Future<void> createTrainingModule(TrainingModuleModel module) async {
@@ -517,7 +528,9 @@ class DatabaseService {
       return;
     }
 
-    await _client!.from(AppConstants.trainingModulesTable).insert(module.toMap());
+    await _client!
+        .from(AppConstants.trainingModulesTable)
+        .insert(module.toMap());
   }
 
   Future<void> saveSkillMark(SkillMarkModel mark) async {
@@ -537,7 +550,8 @@ class DatabaseService {
 
     final response = await _client!
         .from(AppConstants.skillMarksTable)
-        .select('*,intern:users!skill_marks_intern_id_fkey(full_name),mentor:users!skill_marks_mentor_id_fkey(full_name)')
+        .select(
+            '*,intern:users!skill_marks_intern_id_fkey(full_name),mentor:users!skill_marks_mentor_id_fkey(full_name)')
         .eq('intern_id', internId)
         .order('evaluated_at', ascending: false);
 
@@ -555,7 +569,8 @@ class DatabaseService {
 
     final response = await _client!
         .from(AppConstants.skillMarksTable)
-        .select('*,intern:users!skill_marks_intern_id_fkey(full_name),mentor:users!skill_marks_mentor_id_fkey(full_name)')
+        .select(
+            '*,intern:users!skill_marks_intern_id_fkey(full_name),mentor:users!skill_marks_mentor_id_fkey(full_name)')
         .eq('mentor_id', mentorId)
         .order('evaluated_at', ascending: false)
         .limit(limit);
@@ -569,7 +584,9 @@ class DatabaseService {
       return;
     }
 
-    await _client!.from(AppConstants.attendanceTable).insert(attendance.toMap());
+    await _client!
+        .from(AppConstants.attendanceTable)
+        .insert(attendance.toMap());
   }
 
   Future<List<AttendanceModel>> fetchMentorAttendanceForDate(
@@ -579,16 +596,15 @@ class DatabaseService {
     if (!_enabled) {
       return _mockAttendance
           .where(
-            (a) =>
-                a.mentorId == mentorId &&
-                _dateKey(a.date) == _dateKey(date),
+            (a) => a.mentorId == mentorId && _dateKey(a.date) == _dateKey(date),
           )
           .toList();
     }
 
     final response = await _client!
         .from(AppConstants.attendanceTable)
-        .select('*,intern:users!attendance_intern_id_fkey(full_name),mentor:users!attendance_mentor_id_fkey(full_name)')
+        .select(
+            '*,intern:users!attendance_intern_id_fkey(full_name),mentor:users!attendance_mentor_id_fkey(full_name)')
         .eq('mentor_id', mentorId)
         .eq('date', _dateKey(date))
         .order('created_at', ascending: false);
@@ -623,6 +639,7 @@ class DatabaseService {
               title: m.title,
               subtitle: m.description ?? m.department ?? 'Training module',
               category: SearchCategory.modules,
+              fileUrl: m.fileUrl,
             ),
           )
           .toList();
@@ -635,29 +652,35 @@ class DatabaseService {
               title: p.title,
               subtitle: 'Policy document',
               category: SearchCategory.policies,
+              fileUrl: p.fileUrl,
             ),
           )
           .toList();
 
-      return SearchResultBundle(interns: interns, modules: modules, policies: policies);
+      return SearchResultBundle(
+          interns: interns, modules: modules, policies: policies);
     }
 
-    final internsResponse = await _client!
+    final client = _client;
+    if (client == null) return const SearchResultBundle();
+
+    final internsResponse = await client
         .from(AppConstants.usersTable)
-        .select('id,full_name,intern_profiles(matricule,departments(name))')
+        .select(
+            'id,full_name,intern_profiles!intern_profiles_user_id_fkey(matricule,departments(name))')
         .eq('role', 'intern')
         .ilike('full_name', '%$query%')
         .limit(20);
 
-    final modulesResponse = await _client!
+    final modulesResponse = await client
         .from(AppConstants.trainingModulesTable)
-        .select('id,title,description,departments(name)')
+        .select('id,title,description,file_url,departments(name)')
         .ilike('title', '%$query%')
         .limit(20);
 
-    final policiesResponse = await _client!
+    final policiesResponse = await client
         .from(AppConstants.policyDocumentsTable)
-        .select('id,title')
+        .select('id,title,file_url')
         .ilike('title', '%$query%')
         .limit(20);
 
@@ -686,6 +709,7 @@ class DatabaseService {
             title: row['title']?.toString() ?? 'Module',
             subtitle: row['description']?.toString() ?? 'Training module',
             category: SearchCategory.modules,
+            fileUrl: row['file_url']?.toString(),
           ),
         )
         .toList();
@@ -697,11 +721,13 @@ class DatabaseService {
             title: row['title']?.toString() ?? 'Policy',
             subtitle: 'Policy document',
             category: SearchCategory.policies,
+            fileUrl: row['file_url']?.toString(),
           ),
         )
         .toList();
 
-    return SearchResultBundle(interns: interns, modules: modules, policies: policies);
+    return SearchResultBundle(
+        interns: interns, modules: modules, policies: policies);
   }
 
   String createId() => _uuid.v4();

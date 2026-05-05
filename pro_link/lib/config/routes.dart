@@ -1,4 +1,4 @@
-﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../models/user_model.dart';
@@ -64,29 +64,39 @@ final routerProvider = Provider<GoRouter>((ref) {
         return _homeForRole(auth.role);
       }
 
-      if (auth.isLoggedIn && path.startsWith('/admin') && auth.role != AppRole.admin) {
+      if (auth.isLoggedIn &&
+          path.startsWith('/admin') &&
+          auth.role != AppRole.admin) {
         return _homeForRole(auth.role);
       }
 
-      if (auth.isLoggedIn && path.startsWith('/mentor') && auth.role != AppRole.mentor) {
+      if (auth.isLoggedIn &&
+          path.startsWith('/mentor') &&
+          auth.role != AppRole.mentor) {
         return _homeForRole(auth.role);
       }
 
-      if (auth.isLoggedIn && path.startsWith('/intern') && auth.role != AppRole.intern) {
+      if (auth.isLoggedIn &&
+          path.startsWith('/intern') &&
+          auth.role != AppRole.intern) {
         return _homeForRole(auth.role);
       }
 
       return null;
     },
     routes: [
-      GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),
+      GoRoute(
+          path: '/splash', builder: (context, state) => const SplashScreen()),
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
-      GoRoute(path: '/register', builder: (context, state) => const RegisterScreen()),
+      GoRoute(
+          path: '/register',
+          builder: (context, state) => const RegisterScreen()),
       GoRoute(
         path: '/pending',
         builder: (context, state) => const PendingApprovalScreen(),
       ),
-      GoRoute(path: '/admin', builder: (context, state) => const AdminDashboard()),
+      GoRoute(
+          path: '/admin', builder: (context, state) => const AdminDashboard()),
       GoRoute(
         path: '/admin/manage-interns',
         builder: (context, state) => const ManageInternsScreen(),
@@ -103,14 +113,18 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/admin/upload-policy',
         builder: (context, state) => const UploadPolicyScreen(),
       ),
-      GoRoute(path: '/mentor', builder: (context, state) => const MentorDashboard()),
+      GoRoute(
+          path: '/mentor',
+          builder: (context, state) => const MentorDashboard()),
       GoRoute(
         path: '/mentor/intern-group',
         builder: (context, state) => const InternGroupScreen(),
       ),
       GoRoute(
         path: '/mentor/mark-performance',
-        builder: (context, state) => const MarkPerformanceScreen(),
+        builder: (context, state) => MarkPerformanceScreen(
+          initialInternId: state.uri.queryParameters['internId'],
+        ),
       ),
       GoRoute(
         path: '/mentor/upload-training',
@@ -120,7 +134,9 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/mentor/attendance',
         builder: (context, state) => const AttendanceScreen(),
       ),
-      GoRoute(path: '/intern', builder: (context, state) => const InternDashboard()),
+      GoRoute(
+          path: '/intern',
+          builder: (context, state) => const InternDashboard()),
       GoRoute(
         path: '/intern/work-id',
         builder: (context, state) => const DigitalWorkIdScreen(),
@@ -133,18 +149,24 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/intern/training',
         builder: (context, state) => const TrainingScreen(),
       ),
-      GoRoute(path: '/intern/marks', builder: (context, state) => const MarksScreen()),
+      GoRoute(
+          path: '/intern/marks',
+          builder: (context, state) => const MarksScreen()),
       GoRoute(
         path: '/intern/calendar',
         builder: (context, state) => const InternCalendarScreen(),
       ),
-      GoRoute(path: '/profile', builder: (context, state) => const ProfileScreen()),
-      GoRoute(path: '/search', builder: (context, state) => const SearchScreen()),
+      GoRoute(
+          path: '/profile', builder: (context, state) => const ProfileScreen()),
+      GoRoute(
+          path: '/search', builder: (context, state) => const SearchScreen()),
       GoRoute(
         path: '/notifications',
         builder: (context, state) => const NotificationsScreen(),
       ),
-      GoRoute(path: '/settings', builder: (context, state) => const SettingsScreen()),
+      GoRoute(
+          path: '/settings',
+          builder: (context, state) => const SettingsScreen()),
     ],
   );
 });

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -38,14 +38,27 @@ class _InternDashboardState extends ConsumerState<InternDashboard> {
         title: const Text('Intern Dashboard'),
         actions: [
           IconButton(
-            onPressed: () => context.go('/profile'),
+            tooltip: 'Search',
+            onPressed: () => context.push('/search'),
+            icon: const Icon(Icons.search_rounded),
+          ),
+          IconButton(
+            tooltip: 'Notifications',
+            onPressed: () => context.push('/notifications'),
+            icon: const Icon(Icons.notifications_outlined),
+          ),
+          IconButton(
+            tooltip: 'Profile',
+            onPressed: () => context.push('/profile'),
             icon: const Icon(Icons.person_outline_rounded),
           ),
           IconButton(
-            onPressed: () => context.go('/settings'),
+            tooltip: 'Settings',
+            onPressed: () => context.push('/settings'),
             icon: const Icon(Icons.settings_outlined),
           ),
           IconButton(
+            tooltip: 'Sign out',
             onPressed: () async {
               await ref.read(authProvider).logout();
               if (!context.mounted) return;
@@ -62,18 +75,11 @@ class _InternDashboardState extends ConsumerState<InternDashboard> {
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              Text(
-                'Welcome ${auth.currentUser?.fullName ?? 'Intern'}',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-              ),
-              const SizedBox(height: 6),
-              const Text('Track schedules, marks, and learning modules from one workspace.'),
-              const SizedBox(height: 14),
+              _buildHeader(context, auth.currentUser?.fullName ?? 'Intern'),
+              const SizedBox(height: 24),
               InkWell(
                 borderRadius: BorderRadius.circular(24),
-                onTap: () => context.go('/intern/work-id'),
+                onTap: () => context.push('/intern/work-id'),
                 child: Hero(
                   tag: 'work-id-card',
                   child: Material(
@@ -88,7 +94,7 @@ class _InternDashboardState extends ConsumerState<InternDashboard> {
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
               LayoutBuilder(
                 builder: (context, constraints) {
                   final compact = constraints.maxWidth < 860;
@@ -148,68 +154,179 @@ class _InternDashboardState extends ConsumerState<InternDashboard> {
                   );
                 },
               ),
-              const SizedBox(height: 20),
-              _ActionButton(
-                title: 'Digital Work ID',
-                subtitle: 'Open your corporate intern card',
-                icon: Icons.badge_rounded,
-                onTap: () => context.go('/intern/work-id'),
+              const SizedBox(height: 32),
+              Text(
+                'Workspace',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
-              _ActionButton(
-                title: 'Schedule',
-                subtitle: 'View your assigned timetable',
-                icon: Icons.schedule_rounded,
-                onTap: () => context.go('/intern/schedule'),
+              const SizedBox(height: 16),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final isCompact = constraints.maxWidth < 600;
+                  return GridView.count(
+                    crossAxisCount: isCompact ? 2 : 4,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: isCompact ? 1.0 : 1.1,
+                    children: [
+                      _GridActionCard(
+                        title: 'Digital ID',
+                        icon: Icons.badge_rounded,
+                        color: Colors.blueAccent,
+                        onTap: () => context.push('/intern/work-id'),
+                      ),
+                      _GridActionCard(
+                        title: 'Schedule',
+                        icon: Icons.schedule_rounded,
+                        color: Colors.orangeAccent,
+                        onTap: () => context.push('/intern/schedule'),
+                      ),
+                      _GridActionCard(
+                        title: 'Training',
+                        icon: Icons.menu_book_rounded,
+                        color: Colors.green,
+                        onTap: () => context.push('/intern/training'),
+                      ),
+                      _GridActionCard(
+                        title: 'Marks',
+                        icon: Icons.analytics_rounded,
+                        color: Colors.purpleAccent,
+                        onTap: () => context.push('/intern/marks'),
+                      ),
+                      _GridActionCard(
+                        title: 'Calendar',
+                        icon: Icons.event_note_rounded,
+                        color: Colors.redAccent,
+                        onTap: () => context.push('/intern/calendar'),
+                      ),
+                    ],
+                  );
+                },
               ),
-              _ActionButton(
-                title: 'Training',
-                subtitle: 'Open your training modules',
-                icon: Icons.menu_book_rounded,
-                onTap: () => context.go('/intern/training'),
-              ),
-              _ActionButton(
-                title: 'Marks',
-                subtitle: 'Track your skill evaluations',
-                icon: Icons.analytics_rounded,
-                onTap: () => context.go('/intern/marks'),
-              ),
-              _ActionButton(
-                title: 'Calendar',
-                subtitle: 'View schedules and evaluation events',
-                icon: Icons.event_note_rounded,
-                onTap: () => context.go('/intern/calendar'),
-              ),
+              const SizedBox(height: 40),
             ],
           ),
         ),
       ),
     );
   }
+
+  Widget _buildHeader(BuildContext context, String name) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(24),
+        gradient: LinearGradient(
+          colors: [
+            theme.colorScheme.primary.withOpacity(0.8),
+            theme.colorScheme.secondary.withOpacity(0.8),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.primary.withOpacity(0.3),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Welcome back,',
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: Colors.white.withOpacity(0.9),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            name,
+            style: theme.textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Track your schedule, marks, and modules in one place.',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: Colors.white.withOpacity(0.8),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-class _ActionButton extends StatelessWidget {
-  const _ActionButton({
+class _GridActionCard extends StatelessWidget {
+  const _GridActionCard({
     required this.title,
-    required this.subtitle,
     required this.icon,
+    required this.color,
     required this.onTap,
   });
 
   final String title;
-  final String subtitle;
   final IconData icon;
+  final Color color;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        onTap: onTap,
-        leading: Icon(icon),
-        title: Text(title),
-        subtitle: Text(subtitle),
-        trailing: const Icon(Icons.chevron_right_rounded),
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? theme.cardColor : Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(isDark ? 0.1 : 0.15),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(icon, color: color, size: 32),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
